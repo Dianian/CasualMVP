@@ -1,54 +1,34 @@
 package com.dianian.casual;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.WindowManager;
 
-/**
- * Created by 付博文 on 2017/8/28.
- */
-public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCompatActivity {
-
+public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragment {
     protected Bundle mBundle = new Bundle();
     protected T mPresenter;
+    protected Activity mActivity;
 
     /**
      * 日志输出标志
      **/
     protected final String TAG = this.getClass().getSimpleName();
 
-
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         mPresenter = createPresenter();
-        mPresenter.attachView((V) this);
-        AppManager.getAppManager().addActivity(this);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);//隐藏软键盘
-        Log.i(TAG, "onCreate");
+        mPresenter.attachView((V) getActivity());
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i(TAG, "onResume");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.i(TAG, "onPause");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i(TAG, "onDestroy");
-        mPresenter.datachView();
-        AppManager.getAppManager().finishActivity(this);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = (Activity) context;
     }
 
     /**
@@ -69,12 +49,12 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
      */
     protected void openActivity(Class<?> mClass, Bundle mBundle) {
         Log.i(TAG, "openActivity");
-        Intent mIntent = new Intent(this, mClass);
+        Intent mIntent = new Intent(mActivity, mClass);
         if (null != mBundle) {
             mIntent.putExtras(mBundle);
         }
-        startActivity(mIntent);
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        mActivity.startActivity(mIntent);
+        mActivity.overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
     /**
@@ -86,7 +66,6 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
     protected void openActivityForResult(Class<?> mClass, int requestCode) {
         Log.i(TAG, "openActivityForResult");
         openActivityForResult(mClass, requestCode, null);
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
     /**
@@ -98,20 +77,13 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
      */
     protected void openActivityForResult(Class<?> mClass, int requestCode, Bundle mBundle) {
         Log.i(TAG, "openActivityForResult");
-        Intent mIntent = new Intent(this, mClass);
+        Intent mIntent = new Intent(mActivity, mClass);
         if (mBundle != null) {
             mIntent.putExtras(mBundle);
         }
-        startActivityForResult(mIntent, requestCode);
+        mActivity.startActivityForResult(mIntent, requestCode);
+        mActivity.overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
-
-    @Override
-    public void finish() {
-        super.finish();
-        Log.i(TAG, "finish");
-        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
-    }
-
 
     protected abstract T createPresenter();
 }

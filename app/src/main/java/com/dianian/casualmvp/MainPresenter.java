@@ -9,7 +9,7 @@ import java.io.IOException;
 import okhttp3.ResponseBody;
 import rx.Subscriber;
 
-import static com.dianian.casualmvp.BaesApplication.sApiService;
+import static com.dianian.casualmvp.BaseApplication.sApiService;
 
 public class MainPresenter extends BasePresenter<MainVIewInterface> {
     private MainVIewInterface mMainVIewInterface;

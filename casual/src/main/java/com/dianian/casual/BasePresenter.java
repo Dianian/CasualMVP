@@ -14,12 +14,10 @@ import rx.subscriptions.CompositeSubscription;
 public class BasePresenter<T>{
 
     Reference<T> mViewRef;//防止发生内存泄露，使用弱引用
-//    protected ApiService apiStores;
     private CompositeSubscription mCompositeSubscription;
 
     public void attachView(T view) {
         mViewRef = new WeakReference<T>(view);
-//        apiStores= AppClient.getAppClient().retrofit().create(apiStores.getClass());
     }
 
     protected T getView() {

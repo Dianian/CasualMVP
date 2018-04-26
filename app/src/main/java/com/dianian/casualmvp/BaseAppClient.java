@@ -4,7 +4,7 @@ import com.dianian.casual.net.AppClient;
 
 import retrofit2.Retrofit;
 
-public class BaesAppClient extends AppClient {
+public class BaseAppClient extends AppClient {
 
     @Override
     public Retrofit retrofit() {

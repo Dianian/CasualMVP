@@ -5,7 +5,7 @@ import android.app.Application;
 
 import com.dianian.casual.net.AppClient;
 
-public class BaesApplication extends Application {
+public class BaseApplication extends Application {
     public static ApiService sApiService;
 
     @Override
